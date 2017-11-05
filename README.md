@@ -1,5 +1,5 @@
 # Headlines
- - [OnGoing Project]
+ - [Ongoing Project]
  - Android app which displays Headlines using NewsAPI
 # Contribution
  - Anyone can contribute to this project by sending a pull request explaining as to what changes have you done.
