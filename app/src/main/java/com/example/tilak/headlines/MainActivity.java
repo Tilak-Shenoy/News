@@ -87,8 +87,9 @@ public class MainActivity extends AppCompatActivity  implements LoaderCallbacks<
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String url=adapter.contentUrl;
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
+                Intent i = new Intent(MainActivity.this,Web.class);
+                i.putExtra("url",url);
+//                i.setData(Uri.parse(url));
                 startActivity(i);
 
             }
