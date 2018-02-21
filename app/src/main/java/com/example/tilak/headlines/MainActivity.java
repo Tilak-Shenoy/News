@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.io.InputStream;
@@ -26,7 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 public class MainActivity extends AppCompatActivity  implements LoaderCallbacks<List<Article>>{
 
-    private static final String REQUEST_URL="https://newsapi.org/v1/articles?source=the-times-of-india&sortBy=latest&apiKey=f249014a7ef8447db1ce2edf2dad7e5b";
+    private static String REQUEST_URL="https://newsapi.org/v2/top-headlines?sources=";
+    private static final String API_KEY="apiKey=f249014a7ef8447db1ce2edf2dad7e5b";
 
     /**
      * Constant value for the earthquake loader ID. We can choose any integer.
@@ -36,8 +38,9 @@ public class MainActivity extends AppCompatActivity  implements LoaderCallbacks<
 
     private ArticleAdapter adapter;
 
-    TextView mEmptyStateTextView;
 
+    TextView mEmptyStateTextView,preference;
+    Spinner prefList;
 
     ListView listView;
 
@@ -45,9 +48,22 @@ public class MainActivity extends AppCompatActivity  implements LoaderCallbacks<
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         listView=(ListView) findViewById(R.id.container);
+        prefList=(Spinner)findViewById(R.id.prefList);
+        preference=(TextView)findViewById(R.id.PreferenceView);
         mEmptyStateTextView=(TextView) findViewById(R.id.empty_view);
+
+
+
+        ArrayList source=  getIntent().getStringArrayListExtra("sourceString");
+        for (Object x: source){
+            REQUEST_URL=REQUEST_URL+x+",";
+        }
+        REQUEST_URL=REQUEST_URL.substring(0,REQUEST_URL.length()-1);
+        REQUEST_URL+="&";
+        REQUEST_URL=REQUEST_URL+API_KEY;
+
+        //TODO: Give the user to change the preference any time..in the mean time let the app use the spinner as filter
 
         adapter=new ArticleAdapter(this,new ArrayList<Article>());
 
@@ -110,6 +126,7 @@ public class MainActivity extends AppCompatActivity  implements LoaderCallbacks<
         loadingIndicator.setVisibility(View.GONE);
 
         // Set empty state text to display "No Articles found."
+        if (Articles==null)
         mEmptyStateTextView.setText(R.string.no_Articles);
 
         // Clear the adapter of previous Article data
