@@ -6,6 +6,7 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
@@ -17,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -53,8 +55,9 @@ public class MainActivity extends AppCompatActivity  implements LoaderCallbacks<
         preference=(TextView)findViewById(R.id.PreferenceView);
         mEmptyStateTextView=(TextView) findViewById(R.id.empty_view);
 
-
-
+        /*
+        *The below block of code is to generate the url so that data from the api can be fetched
+         */
         ArrayList source=  getIntent().getStringArrayListExtra("sourceString");
         for (Object x: source){
             REQUEST_URL=REQUEST_URL+x+",";
@@ -65,6 +68,23 @@ public class MainActivity extends AppCompatActivity  implements LoaderCallbacks<
 
         //TODO: Give the user to change the preference any time..in the mean time let the app use the spinner as filter
 
+
+        preference.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /*
+                Editing the string in oreder to make the url valid
+                 */
+               REQUEST_URL= REQUEST_URL.substring(0,REQUEST_URL.indexOf("sources="));
+               REQUEST_URL+="sources=";
+
+                startActivity(new Intent(MainActivity.this,Preference.class));
+            }
+        });
+
+        /*
+        Populates the ListView with the respones fetched via API
+         */
         adapter=new ArticleAdapter(this,new ArrayList<Article>());
 
         listView.setAdapter(adapter);
@@ -111,6 +131,19 @@ public class MainActivity extends AppCompatActivity  implements LoaderCallbacks<
             }
 
         });
+
+
+    }
+
+    @Override
+    public void onBackPressed(){
+        /*
+                Editing the string in oreder to make the url valid
+                 */
+        REQUEST_URL= REQUEST_URL.substring(0,REQUEST_URL.indexOf("sources="));
+        REQUEST_URL+="sources=";
+
+        startActivity(new Intent(MainActivity.this,Preference.class));
     }
 
     @Override
